@@ -9,7 +9,7 @@
 To clone the repository and install mod_cookie_auth, run:
 
 ```sh
-git clone https://github.com/vivimice/mod_cookie_auth
+git clone https://github.com/vivimice/mod_cookie_auth.git
 cd mod_cookie_auth
 sudo ./install.sh
 ```
