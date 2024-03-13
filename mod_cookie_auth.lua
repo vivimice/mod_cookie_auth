@@ -1,3 +1,17 @@
+-- Copyright 2024 vivimice@gmail.com
+--
+-- Licensed under the Apache License, Version 2.0 (the "License");
+-- you may not use this file except in compliance with the License.
+-- You may obtain a copy of the License at
+--
+--     http://www.apache.org/licenses/LICENSE-2.0
+--
+-- Unless required by applicable law or agreed to in writing, software
+-- distributed under the License is distributed on an "AS IS" BASIS,
+-- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+-- See the License for the specific language governing permissions and
+-- limitations under the License.
+
 require 'apache2'
 
 function get_cookie_name(r)
@@ -26,6 +40,10 @@ function get_ttl(r)
     return ttl
 end
 
+function get_cookie_secure_flag(r)
+    return r.subprocess_env["MOD_COOKIE_AUTH_DISABLE_SECURE_COOKIE"] ~= 'this_is_unsafe'
+end
+
 function store_credential(r)
     local salt = get_salt(r)
     if salt == nil then
@@ -47,7 +65,7 @@ function store_credential(r)
     r:setcookie({
         key = cookie_name,
         value = cookie_value,
-        secure = true,
+        secure = get_cookie_secure_flag(r),
         httponly = true,
         path = path,
         expires = now + get_ttl(r)
@@ -105,17 +123,8 @@ function check(r)
     r:debug("user set. user="..user..", realm="..realm)
     r.user = user
 
-    local do_renew
-    local renew_threshold = 0.8
-    if life / ttl < renew_threshold then
-        do_renew = true
-    else
-        do_renew = (math.random() * (1 - renew_threshold) + renew_threshold) < (life / ttl)
-    end
-
-    if do_renew then
-        store_credential(r)
-    end
+    -- refresh credentials
+    store_credential(r)
     
     return apache2.OK
 end
