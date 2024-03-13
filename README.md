@@ -43,7 +43,7 @@ sudo apache2ctl configtest && sudo apache2ctl graceful
 
 # How it works
 
-Upon successful initial authentication by standard authentication modules (modauthbasic or modauthdigeset), the `mod_cookie_auth` hook generates a cookie. This cookie contains the authenticated user details, expiration time, and a checksum.
+Upon successful initial authentication by standard authentication modules (mod_auth_basic or mod_auth_digeset), the `mod_cookie_auth` hook generates a cookie. This cookie contains the authenticated user details, expiration time, and a checksum.
 
 In instances where the browser is restored from sleep, the 'Authorization' header may be cleared. During such instances, `mod_cookie_auth` is capable of restoring the user's authentication state using the persisted cookies.
 
