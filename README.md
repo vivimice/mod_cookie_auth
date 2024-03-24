@@ -76,3 +76,5 @@ By default, the `mod_cookie_auth` module enables both `http_only` and `secure` a
 ## Digest Salting
 
 The `mod_cookie_auth` module utilizes salted MD5 to mitigate the risk of cookie value forgery. For enhanced resistance against dictionary attacks, it is advisable to set a private, highly random value for the `MOD_COOKIE_AUTH_SALT` configuration.
+
+Also, to avoid the unintended exposure of `MOD_COOKIE_AUTH_SALT`, ensure that the configuration file containing the `SetEnv-If` directive is not accessible by any unnecessary user on the server.
